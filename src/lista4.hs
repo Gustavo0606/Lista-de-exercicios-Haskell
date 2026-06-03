@@ -50,3 +50,54 @@ fibonacci x = calcula_fibonacci 0 1 x
     where
         calcula_fibonacci _ _ 0 = []
         calcula_fibonacci a b c = a: calcula_fibonacci b (a+b) (c-1)
+
+-- (6) Sem olhar as definições no Prelude, defina a seguintes funções de alta ordem:
+-- a) Decide se todos os elementos de uma lista satisfazem um predicado:
+todos :: (a -> Bool) -> [a] -> Bool
+todos _ [] = True
+todos a (x:xs)
+    |a x = todos a xs
+    |otherwise = False
+
+-- b) Decide se algum elemento de uma lista satisfaz um predicado:
+algum :: (a -> Bool) -> [a] -> Bool
+algum _ [] = False
+algum a (x:xs)
+    |a x = True
+    |otherwise = algum a xs
+
+-- c) Selecione elementos de uma lista enquanto eles satisfazem um predicado:
+pegueEnquanto :: (a -> Bool) -> [a] -> [a]
+pegueEnquanto _ [] = []
+pegueEnquanto a (x:xs)
+    |a x = x: pegueEnquanto a xs
+    |otherwise = []
+
+-- c) Remove elementos de uma lista enquanto eles satisfazem um predicado:
+removeEnquanto :: (a -> Bool) -> [a] -> [a]
+removeEnquanto _ [] = []
+removeEnquanto a (x:xs)
+    |a x = removeEnquanto a xs
+    |otherwise = (x:xs)
+
+--(7) Redefina as funções map e filter usando foldr.
+mapFoldr :: (a -> b) -> [a] -> [b]
+mapFoldr a = foldr funcao []
+    where 
+        funcao b c = a b: c
+filterFoldr ::(a -> Bool) -> [a] -> [a]
+filterFoldr a = foldr filtrar []
+    where filtrar b c
+            |a b = b: c
+            |otherwise = c
+
+--(8) Usando foldl, defina a função dec2int :: [Int] -> Int que converte uma lista de inteiros em um inteiro.
+dec2int :: [Int] -> Int 
+dec2int = foldl funcao 0
+    where
+        funcao a b = a*10 + b
+
+altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
+altMap _ _ [] = []
+altMap a b (x:xs) = a x : altMap b a xs
+
