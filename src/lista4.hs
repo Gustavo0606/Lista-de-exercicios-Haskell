@@ -97,7 +97,30 @@ dec2int = foldl funcao 0
     where
         funcao a b = a*10 + b
 
+--(9) Considere a função unfold que encapsula o padrão recursivo definido abaixo
+
+unfold p h t x 
+       | p x = []
+       | otherwise = h x : unfold p h t (t x)
+-- a função unfold produz uma lista vazia se o predicado é verdadeiro para o argumento passado em x
+-- aso contrário, produz uma lista não vazia aplicando h a x, para formar a cabeça, e a função t aplicada a x que é processado recursivamente 
+-- usando as mesmas regras, produzindo a cauda da lista.
+--Redefina as funções map f e iterate f da biblioteca padrão usando a função unfold.
+
+mapUnfold :: (a -> b) -> [a] -> [b]
+mapUnfold a b = unfold (null) (\(x:xs) -> a x) (\(x:xs) -> xs) b
+
+iterateUnfold :: (a -> a) -> a -> [a]
+iterateUnfold a b = unfold (\_ -> False) id (a) b
+
+
+--(10) Defina a função altMap :: (a -> b) -> (a -> b) -> [a] -> [b] que aplica de forma alternada
+-- as duas funções que recebe como argumento a elementos sucessivos em uma lista.
 altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
 altMap _ _ [] = []
 altMap a b (x:xs) = a x : altMap b a xs
 
+--(11) defina uma função de alta ordem chamada curry que converte uma função em um par (tupla) em uma versão currificada.
+--Defina também uma função chamada uncurry que converte uma função currificada para dois argumentos em uma função que recebe um par (tupla).
+curry :: ((a, b) -> c) -> a -> b -> c
+curry (a, b) = a b
