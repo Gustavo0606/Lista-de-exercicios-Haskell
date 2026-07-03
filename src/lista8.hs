@@ -1,3 +1,5 @@
+import Data.Char (toUpper)
+
 --(1) Crie um tipo de dados Estacao para representar as quatro estações do ano. Em seguida, crie um tipo Clima com dois construtores: 
 --Chuvoso (que não recebe parâmetros) e Temperado (que recebe um valor de temperatura em Float). 
 --Implemente a função ajustarClima :: Estacao -> Clima que retorna o clima padrão para uma estação
@@ -61,3 +63,89 @@ instance Ord Prioridade where
     Alta > Media = True
     _ > _ = False
     x >= y = (x > y) || (x == y)
+
+--(7)Escreva uma ação chamada ecoChar :: IO () que lê um único caractere do teclado utilizando getChar e
+-- em seguida, imprime esse mesmo caractere na tela duas vezes seguidas utilizando putChar.
+ecoChar :: IO ()
+ecoChar = do
+    caracter <- getChar
+    putChar(caracter)
+    putChar(caracter)
+
+--(8)Implemente sua própria versão da função que imprime uma string na tela, sem usar a putStr nativa. Chame-a de 
+--imprimirString :: String -> IO (). Você deve implementá-la de forma recursiva utilizando apenas casamento de padrões e a primitiva putChar.
+imprimirString :: String -> IO ()
+imprimirString [] = return()
+imprimirString (x:xs) = do
+    putChar(x)
+    imprimirString xs
+
+--(9)Escreva uma ação chamada . Ela deve pedir para o usuário digitar uma linha de texto (utilizando getLine).
+--O programa deve calcular o comprimento da string digitada e exibir na tela a mensagem: "Você digitou X caracteres.", onde X é o número de caracteres.
+contarEntrada :: IO ()
+contarEntrada = do
+    putStrLn ("Digite uma linha de texto")
+    texto <- getLine
+    putStrLn("Você digitou " ++ show(somar texto) ++" caracteres")
+    where
+        somar [] = 0
+        somar (x:xs) = 1 + somar xs
+
+--(10) Escreva um pequeno programa interativo chamado menu :: IO (). Ele deve exibir três opções na tela:
+--1. Saudação (Imprime "Olá, Mundo!")
+--2. Despedida (Imprime "Até logo!")
+--3. Sair (Encerra o programa)
+--O programa deve ler a opção desejada. Se o usuário escolher 1 ou 2, o programa executa a ação correspondente e chama a
+-- função menu novamente de forma recursiva (um loop de menu). Se escolher 3, o programa termina.
+menu :: IO ()
+menu = do
+    putStrLn("1. Saudação")
+    putStrLn("2. Despedida")
+    putStrLn("3. Sair")
+    entrada <- getLine
+    loop(entrada)
+    where
+        loop "3" = return()
+        loop "1" = do
+            putStrLn("Olá, Mundo!")
+            menu
+        loop "2" = do
+            putStrLn("Até logo!")
+            menu
+        loop _ = do
+            menu
+        
+--(11)Escreva uma ação chamada repetirAteSair :: IO () que funciona como um eco contínuo. 
+--Ela lê uma linha de texto do usuário e a imprime de volta em caixa alta (letras maiúsculas). 
+--O loop só deve ser interrompido se o usuário digitar a palavra "SAIR".
+repetirAteSair :: IO ()
+repetirAteSair = do
+    texto <- getLine
+    loop(alto(texto))
+    where
+        loop "SAIR" = return()
+        loop x = do
+            putStrLn(x)
+            repetirAteSair
+        alto t = map (toUpper) t
+
+--(12)Crie um jogo interativo chamado adivinharNumero :: Int -> IO (). A função recebe um número secreto como parâmetro 
+--(ex: adivinharNumero 42). O programa deve pedir palpites ao usuário dentro de um loop de IO. A cada palpite errado, 
+--o programa deve responder se o número secreto é "Maior" ou "Menor" do que o palpite fornecido. Quando o usuário acertar, 
+--o programa exibe "Parabéns, você acertou!" e encerra.
+
+adivinharNumero :: Int -> IO ()
+adivinharNumero numsec = do
+    tentativa <- getLine
+    verificar numsec (read tentativa :: Int)
+    where
+        verificar a b
+            |a > b = do
+                putStrLn("Maior")
+                adivinharNumero a
+            |a < b = do
+                putStrLn("Menor")
+                adivinharNumero a
+            |otherwise = do
+                putStrLn("Parábens, você acertou!")
+
